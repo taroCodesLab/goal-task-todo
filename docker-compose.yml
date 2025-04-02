@@ -1,0 +1,55 @@
+services:
+    
+  web: 
+    container_name: mytodo-php
+    build: ./docker-config/php
+    ports:
+      - '5173:5173'
+    volumes:
+      - ./my-todo:/var/www/
+    depends_on:
+      - mysql
+
+  nginx:
+    container_name: mytodo-nginx
+    image: nginx
+    build: ./docker-config/nginx
+    ports:
+      - "81:80"
+    volumes:
+      - ./my-todo:/var/www
+      - ./docker-config/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - web
+
+  mysql:
+    container_name: mytodo-mysql
+    image: mysql:8.0
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      TZ: ${TZ}
+      
+    volumes:
+      - ./docker-config/mysql/data:/var/lib/mysql
+      - ./docker-config/mysql/conf/my.cnf:/etc/mysql/conf.d/my.cnf
+      - ./docker-config/mysql/init:/docker-entrypoint-initdb.d
+
+  # phpmyadmin:
+  #   container_name: myapp-phpmyadmin
+  #   image: phpmyadmin/phpmyadmin
+  #   environment:
+  #     - PMA_ARBITRARY=1
+  #     - PMA_HOST=mysql
+  #     - PMA_USER=${MYSQL_USER}
+  #     - PMA_PASSWORD=${MYSQL_PASSWORD}
+  #   links:
+  #     - mysql
+  #   ports:
+  #     - 8081:80
+  #   volumes:
+  #     - /sessions
