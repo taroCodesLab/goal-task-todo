@@ -3,77 +3,121 @@
     <div class="w-full max-w-xl">
         <draggable v-model="todos" @end="updateOrder" item-key="id" tag="ul" class="mt-6 space-y-3 flex flex-col jutify-center">
           <template #item="{ element: todo }">
-            <TodoItem :key="todo.id" :todo="todo" @delete-todo="deleteTodo" @update-todo="updateTodo" />
+            <TodoItem :todo="todo" @delete-todo="deleteTodo" @update-todo="updateTodo" @toggle-details="onToggleDetails"/>
           </template>
         </draggable>
     </div>
   </div>
 </template>
 
-<script>
+<script setup>
+import { ref, provide } from "vue";
 import draggable from "vuedraggable";
 import TodoItem from "./TodoItem.vue";
-import { deleteTodo, updateOrder, updateTodo } from "../api/todo";
+import { deleteTodo as apiDeleteTodo, updateOrder as apiUpdateOrder, updateTodo as apiUpdateTodo } from "../api/todo";
+import { createTask, deleteTask as apiDeleteTask, toggleTaskStatus as apiToggleTaskStatus } from "../api/task";
+import { onMounted } from "vue";
 
-export default {
-  components: {draggable, TodoItem},
-  props: {initialTodos: Array},
-  data() {
-    return { todos: [...this.initialTodos] };
-  },
-  methods: {
-    async deleteTodo(id) {
-      if (!confirm('本当に削除しますか？')) return;
-      try {
-        // api/todo.jsのdeleteTodo
-        await deleteTodo(id);
 
-        this.todos = this.todos.filter(todo => todo.id !== id);
-      } catch (error) {
-        console.error('エラー:', error);
-      }
-    },
-    // ToDoの並び順の変更を加える
-    async updateOrder() {
-      try {
-        this.todos.forEach((todo, index) => {
-          todo.order = index + 1;
-        });
-        // api/todo.jsのupdateOrder
-        await updateOrder(this.todos);
-        
-      } catch (error) {
-        console.error('エラー:', error);
-        alert('順番の保存に失敗しました');
-      }
-    },
-    async updateTodo(updatedTodo) {
-      const todoId = updatedTodo.id;
+// props
+const props = defineProps({
+  initialTodos: Array
+});
 
-      // 楽観的uiを実施
-      const index = this.todos.findIndex(todo => todo.id === todoId);
-      if (index !== -1) {
-        // 先に画面を更新
-        this.todos[index].goal = updatedTodo.goal;
-      } else {
-        console.warn('Todoの更新に失敗しました');
-      }
-      try {
+// reactive state
+const todos = ref([...props.initialTodos]);
 
-        // api/todo.jsのupdateTodo
-        await updateTodo({
-          todo_id: todoId, 
-          todo_goal: updatedTodo.goal
-        });
-        
-
-      } catch (error) {
-        console.error('エラー:', error);
-        alert('更新に失敗しました');
-      }
-    }
+// methods
+const deleteTodo = async (id) => {
+  if (!confirm('本当に削除しますか？')) return;
+  try {
+    await apiDeleteTodo(id);
+    todos.value = todos.value.filter(todo => todo.id !== id);
+  } catch (error) {
+    console.error('エラー：', error);
   }
 };
+
+const updateOrder = async () => {
+  try {
+    todos.value.forEach((todo, index) => {
+      todo.order = index + 1;
+    });
+    
+    await apiUpdateOrder(todos.value);
+  } catch (error) {
+    console.error('順番の保存に失敗しました', error);
+  }
+};
+
+const updateTodo = async (updatedTodo) => {
+  const index = todos.value.findIndex(todo => todo.id === updatedTodo.id);
+
+  if (index !== -1) {
+    todos.value[index].goal = updatedTodo.goal;
+  } else {
+    console.warn('Todoの更新に失敗しました');
+  }
+
+  try {
+    await apiUpdateTodo({
+      todo_id: updatedTodo.id,
+      todo_goal: updatedTodo.goal
+    });
+  } catch (error) {
+    console.error('更新に失敗しました', error);
+  }
+};
+
+// task関係の関数(provideの使用)
+const addTask = async (taskData) => {
+  try {
+    const createdTask = await createTask(taskData.id, taskData.task);
+
+    // 対象のtodoを検索して追加
+    const targetTodo = todos.value.find(todo => todo.id === taskData.id);
+
+    if (targetTodo) {
+      targetTodo.tasks.push(createdTask);
+    }
+  } catch (error) {
+    console.error('通信エラー：', error);
+  }
+};
+provide('addTask', addTask);
+
+const deleteTask = async (taskData) => {
+  try {
+    await apiDeleteTask(taskData.id);
+    const targetTodo = todos.value.find(todo => todo.id === taskData.goal_id);
+    if (targetTodo) {
+      targetTodo.tasks = targetTodo.tasks.filter(t => t.id !== taskData.id);
+    } else {
+      console.warn('該当するTodoが見つかりませんでした');
+    }
+  } catch (error) {
+    console.error('通信エラー：', error);
+  }
+};
+provide('deleteTask', deleteTask);
+
+const toggleTaskStatus = async (nextStatus, id) => {
+    try {
+        await apiToggleTaskStatus(nextStatus, id);
+    } catch (error) {
+        console.error('通信エラー：', error);
+        alert('ステータスの更新に失敗しました');
+    }
+};
+provide('toggleTaskStatus', toggleTaskStatus);
+
+const onToggleDetails = (todoId) => {
+  const target = todos.value.find(t => t.id === todoId);
+  if (target) {
+    target.showDetails = !target.showDetails;
+  }
+};
+
 </script>
 
 <style scoped>
