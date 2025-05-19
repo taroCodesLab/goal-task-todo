@@ -25,6 +25,7 @@
                     <a href="#" class="text-white font-bold">ログアウト</a>
                     @else
                     <a href="#" class="text-white font-bold">ログイン</a>
+                    <a href="#" class="text-white font-bold">新規登録</a>
                     @endauth
                 </div>
             </div>

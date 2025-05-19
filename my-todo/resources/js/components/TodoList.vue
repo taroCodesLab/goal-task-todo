@@ -14,8 +14,8 @@
 import { ref, provide } from "vue";
 import draggable from "vuedraggable";
 import TodoItem from "./TodoItem.vue";
-import { deleteTodo as apiDeleteTodo, updateOrder as apiUpdateOrder, updateTodo as apiUpdateTodo } from "../api/todo";
-import { createTask, deleteTask as apiDeleteTask, toggleTaskStatus as apiToggleTaskStatus } from "../api/task";
+import { useTodoStore } from '../stores/todoStore';
+import { storeToRefs } from 'pinia';
 import { onMounted } from "vue";
 
 
@@ -24,15 +24,18 @@ const props = defineProps({
   initialTodos: Array
 });
 
-// reactive state
-const todos = ref([...props.initialTodos]);
+const todoStore = useTodoStore();
+const { todos } = storeToRefs(todoStore);
+
+onMounted(() => {
+  todoStore.todos = [...props.initialTodos];
+});
 
 // methods
 const deleteTodo = async (id) => {
   if (!confirm('本当に削除しますか？')) return;
   try {
-    await apiDeleteTodo(id);
-    todos.value = todos.value.filter(todo => todo.id !== id);
+    await todoStore.deleteTodo(id);
   } catch (error) {
     console.error('エラー：', error);
   }
@@ -40,30 +43,15 @@ const deleteTodo = async (id) => {
 
 const updateOrder = async () => {
   try {
-    todos.value.forEach((todo, index) => {
-      todo.order = index + 1;
-    });
-    
-    await apiUpdateOrder(todos.value);
+    await todoStore.updateOrder();
   } catch (error) {
     console.error('順番の保存に失敗しました', error);
   }
 };
 
 const updateTodo = async (updatedTodo) => {
-  const index = todos.value.findIndex(todo => todo.id === updatedTodo.id);
-
-  if (index !== -1) {
-    todos.value[index].goal = updatedTodo.goal;
-  } else {
-    console.warn('Todoの更新に失敗しました');
-  }
-
   try {
-    await apiUpdateTodo({
-      todo_id: updatedTodo.id,
-      todo_goal: updatedTodo.goal
-    });
+    await todoStore.updateTodo(updatedTodo);
   } catch (error) {
     console.error('更新に失敗しました', error);
   }
@@ -72,14 +60,7 @@ const updateTodo = async (updatedTodo) => {
 // task関係の関数(provideの使用)
 const addTask = async (taskData) => {
   try {
-    const createdTask = await createTask(taskData.id, taskData.task);
-
-    // 対象のtodoを検索して追加
-    const targetTodo = todos.value.find(todo => todo.id === taskData.id);
-
-    if (targetTodo) {
-      targetTodo.tasks.push(createdTask);
-    }
+    await todoStore.addTask(taskData.id, taskData.task);
   } catch (error) {
     console.error('通信エラー：', error);
   }
@@ -88,34 +69,25 @@ provide('addTask', addTask);
 
 const deleteTask = async (taskData) => {
   try {
-    await apiDeleteTask(taskData.id);
-    const targetTodo = todos.value.find(todo => todo.id === taskData.goal_id);
-    if (targetTodo) {
-      targetTodo.tasks = targetTodo.tasks.filter(t => t.id !== taskData.id);
-    } else {
-      console.warn('該当するTodoが見つかりませんでした');
-    }
+    await todoStore.deleteTask(taskData.goal_id, taskData.id);
   } catch (error) {
     console.error('通信エラー：', error);
   }
 };
 provide('deleteTask', deleteTask);
 
-const toggleTaskStatus = async (nextStatus, id) => {
-    try {
-        await apiToggleTaskStatus(nextStatus, id);
-    } catch (error) {
-        console.error('通信エラー：', error);
-        alert('ステータスの更新に失敗しました');
-    }
+const toggleTaskStatus = async (nextStatus, id, goalId) => {
+  try {
+    await todoStore.updateTaskStatus(goalId, id, nextStatus);
+  } catch (error) {
+    console.error('通信エラー：', error);
+    alert('ステータスの更新に失敗しました');
+  }
 };
 provide('toggleTaskStatus', toggleTaskStatus);
 
 const onToggleDetails = (todoId) => {
-  const target = todos.value.find(t => t.id === todoId);
-  if (target) {
-    target.showDetails = !target.showDetails;
-  }
+  todoStore.toggleDetails(todoId);
 };
 
 </script>
