@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Goal;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -21,7 +22,8 @@ class GoalFactory extends Factory
     {
         return [
             'goal' => fake()->realText(),
-            'progress' => 0,
+            'user_id' => User::factory(),
+            //'progress' => 0,
             'created_at' => now(),
             'updated_at' => now(),
         ];

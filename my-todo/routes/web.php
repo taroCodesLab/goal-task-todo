@@ -17,21 +17,21 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return redirect()->route('todo.index');
+    return redirect()->route('goal.index');
 });
 
-Route::get('/todo', [GoalController::class, 'index'])->name('todo.index');
-Route::post('/todo', [GoalController::class, 'store'])->name('todo.store');
-Route::delete('/todo/{goal}', [GoalController::class, 'destroy'])->name('todo.delete');
+Route::get('/goal', [GoalController::class, 'index'])->name('goal.index');
+Route::post('/goal', [GoalController::class, 'store'])->name('goal.store');
+Route::delete('/goal/{goal}', [GoalController::class, 'destroy'])->name('goal.delete');
 
 Route::post('/task', [TaskController::class, 'store'])->name('task.store');
 
 Route::put('/task/{task}/status', [TaskController::class, 'updateStatus']);
 Route::delete('/task/{task}', [TaskController::class, 'destroy'])->name('task.delete');
 
-Route::post('/todo/update-order', [GoalController::class, 'updateOrder'])->name('todo.updateOrder');
+Route::post('/goal/update-order', [GoalController::class, 'updateOrder'])->name('goal.updateOrder');
 
-Route::put('/todo/{goal}', [GoalController::class, 'update'])->name('todo.update');
+Route::put('/goal/{goal}', [GoalController::class, 'update'])->name('goal.update');
 
 
 Route::get('/dashboard', function () {

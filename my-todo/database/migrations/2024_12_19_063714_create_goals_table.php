@@ -15,7 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('goal'); //目標（大目）
             $table->text('description')->nullable(); //目標の説明
-            $table->unsignedTinyInteger('progress')->default(0); //進捗率（0～100）
+            $table->foreignId('user_id')->constrained('users')->cascadeOnUpdate()->cascadeOnDelete(); //ユーザーID
+            //$table->unsignedTinyInteger('progress')->default(0); //進捗率（0～100） * 
             $table->timestamps();
         });
     }

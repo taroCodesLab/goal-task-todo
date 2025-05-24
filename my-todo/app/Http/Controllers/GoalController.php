@@ -13,22 +13,25 @@ class GoalController extends Controller
      */
     public function index()
     {
-        //GoalとGoal下のTaskのデータを作成順で$todosに格納
+        //GoalとGoal下のTaskのデータを作成順で$goalsに格納
         //コードの可読性を優先し、fnの使用を避けた
-        $todos = Goal::withTasksOrdered()->get()->map(function ($todo) {
-            return [
-                'id' => $todo->id,
-                'goal' => $todo->goal,
-                'completion_rate' => $todo->completeRate(),
-                //Goal下にあるTaskの必要なデータの取得
-                'tasks' => $todo->tasks->map(fn ($task) => [
-                    'id' => $task->id,
-                    'task' => $task->task,
-                    'status' => $task->status,
-                ])
-            ];
-        });
-        return view('goals.index', ['todos' => $todos]);
+        $goals = Goal::where('user_id', auth()->id())
+            ->withTasksOrdered()
+            ->get()
+            ->map(function ($goal) {
+                return [
+                    'id' => $goal->id,
+                    'goal' => $goal->goal,
+                    'completion_rate' => $goal->completeRate(),
+                    //Goal下にあるTaskの必要なデータの取得
+                    'tasks' => $goal->tasks->map(fn ($task) => [
+                        'id' => $task->id,
+                        'task' => $task->task,
+                        'status' => $task->status,
+                    ])
+                ];
+            });
+        return view('goals.index', ['goals' => $goals]);
     }
 
     /**
@@ -48,9 +51,10 @@ class GoalController extends Controller
             'goal' => ['required'],
         ]);
 
+        $validated['user_id'] = auth()->id();
         Goal::create($validated);
         
-        return redirect()->route('todo.index');
+        return redirect()->route('goal.index');
     }
 
     /**

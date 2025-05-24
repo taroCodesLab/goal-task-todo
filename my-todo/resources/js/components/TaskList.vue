@@ -19,7 +19,7 @@ import TaskItem from './TaskItem.vue';
 // Props
 const props = defineProps({
     tasks: Array,
-    todo: {
+    goal: {
         type: Object,
         required: true
     }
@@ -37,7 +37,7 @@ const handleAddTask = async () => {
     if (!newTask.value.trim()) return;
 
     const taskData = {
-        id: props.todo.id,
+        id: props.goal.id,
         task: newTask.value,
         status: '未着手'
     };

@@ -18,7 +18,7 @@
         <header style="background-color: #b0e0e6;" class="p-4 sm:w-full">
             <div class="container mx-auto flex items-center justify-between">
                 <a href="{{ route('todo.index') }}">
-                    <h1 class="font-bold text-lg text-white">You are TODO</h1>
+                    <h1 class="font-bold text-lg text-white">You are GOAL</h1>
                 </a>
                 <div class="flex items-center space-x-4">
                     @auth
@@ -34,7 +34,7 @@
             @yield('content')
         </div>
         <footer style="background-color: #b0e0e6;" class="h-6 flex items-center justify-center p-2 mt-4 font-bold text-white">
-            <p>© 2025 You are ToDo</p>
+            <p>© 2025 You are Goal</p>
         </footer>
     </body>
 </html>
