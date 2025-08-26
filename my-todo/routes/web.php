@@ -3,6 +3,7 @@
 use App\Http\Controllers\GoalController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -21,18 +22,21 @@ Route::get('/', function () {
 });
 
 Route::get('/goal', [GoalController::class, 'index'])->name('goal.index');
-Route::post('/goal', [GoalController::class, 'store'])->name('goal.store');
-Route::delete('/goal/{goal}', [GoalController::class, 'destroy'])->name('goal.delete');
+Route::middleware(['auth'])->group(function () {
+    // Route::post('/goal', [GoalController::class, 'store'])->name('goal.store');
+    // Route::delete('/goal/{goal}', [GoalController::class, 'destroy'])->name('goal.delete');
 
-Route::post('/task', [TaskController::class, 'store'])->name('task.store');
+    // Route::post('/task', [TaskController::class, 'store'])->name('task.store');
+    // Route::put('/task/{task}/status', [TaskController::class, 'updateStatus']);
+    // Route::delete('/task/{task}', [TaskController::class, 'destroy'])->name('task.delete');
 
-Route::put('/task/{task}/status', [TaskController::class, 'updateStatus']);
-Route::delete('/task/{task}', [TaskController::class, 'destroy'])->name('task.delete');
+    // Route::post('/goal/update-order', [GoalController::class, 'updateOrder'])->name('goal.updateOrder');
+    // Route::put('/goal/{goal}', [GoalController::class, 'update'])->name('goal.update');
 
-Route::post('/goal/update-order', [GoalController::class, 'updateOrder'])->name('goal.updateOrder');
-
-Route::put('/goal/{goal}', [GoalController::class, 'update'])->name('goal.update');
-
+    // ユーザー情報編集用のルート
+    Route::get('/users/edit', [UserController::class, 'edit'])->name('users.edit');
+    Route::put('/users/update', [UserController::class, 'update'])->name('users.update');
+});
 
 Route::get('/dashboard', function () {
     return view('dashboard');

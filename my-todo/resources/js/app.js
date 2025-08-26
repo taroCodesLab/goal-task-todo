@@ -3,14 +3,29 @@ import { createApp } from 'vue';
 import { createPinia } from 'pinia';
 import GoalList from './components/GoalList.vue';
 import Alpine from 'alpinejs';
+import { initCsrf } from './api/csrf';
 
-const app = createApp({});
+initCsrf();
 
-const pinia = createPinia();
-app.use(pinia);
+const el = document.getElementById('app');
 
-app.component('goal-list', GoalList);
-app.mount('#app');
+if (el) {
+    const app = createApp({});
+
+    const pinia = createPinia();
+    app.use(pinia);
+
+    app.component('goal-list', GoalList);
+    app.mount('#app');
+}
+
+// const app = createApp({});
+
+// const pinia = createPinia();
+// app.use(pinia);
+
+// app.component('goal-list', GoalList);
+// app.mount('#app');
 
 window.Alpine = Alpine;
 

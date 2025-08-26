@@ -11,6 +11,7 @@ class Goal extends Model
 
     protected $fillable = [
         'goal',
+        'user_id',
     ];
 
     public function user()

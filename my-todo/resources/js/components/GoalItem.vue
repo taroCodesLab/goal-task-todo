@@ -1,13 +1,13 @@
 <template>
     <li class="w-full border-t border-gray-300 py-3 mx-auto">
         <div class="flex items-center space-x-2">
-            <input type="checkbox" class="h-5 w-5 text-green-500">
+            <input type="checkbox" name="goal_check[]" :id="`goal_check_${goal.id}`" class="h-5 w-5 text-green-500">
             <svg @click="toggleDetails" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 cursor-pointer translate-y-0.5" :class="{'text-gray-500': !goal.showDetails, 'text-blue-500': goal.showDetails}" viewBox="0 0 20 20" fill="currentColor">
                   <path :d="goal.showDetails ? closeIcon : openIcon" />
             </svg>
             <span @click="toggleDetails" @dblclick="editGoal" v-if="!isEditing" class="cursor-pointer w-full">{{ goal.goal }}</span>
             <input v-else v-model="editedGoal.goal" @blur="finishEdit" @keydown.enter.exact="onEnter" @compositionstart="isComposing = true" @compositionend="onCompositionEnd" ref="editInput" class="border rounded w-full px-2 py-1">
-            <span v-if="goal.tasks.length > 0" class="text-sm">{{ completionRate }}%</span>
+            <span v-if="Array.isArray(goal.tasks) && goal.tasks.length > 0" class="text-sm">{{ completionRate }}%</span>
             <button @click="deleteGoal" class="text-red-500 hover:text-red-700 px-2">✖️</button>
         </div>
 
@@ -21,7 +21,10 @@ import { ref, computed, nextTick } from 'vue';
 import TaskList from './TaskList.vue';
 
 const props = defineProps({
-    goal: Object
+    goal: {
+        type: Object,
+        required: true
+    }
 });
 
 const emit = defineEmits(['delete-goal', 'update-goal', 'toggle-details']);

@@ -35,10 +35,12 @@ services:
       TZ: ${TZ}
       
     volumes:
-      - ./docker-config/mysql/data:/var/lib/mysql
+      - mysql-data:/var/lib/mysql
       - ./docker-config/mysql/conf/my.cnf:/etc/mysql/conf.d/my.cnf
       - ./docker-config/mysql/init:/docker-entrypoint-initdb.d
 
+volumes:
+  mysql-data:
   # phpmyadmin:
   #   container_name: myapp-phpmyadmin
   #   image: phpmyadmin/phpmyadmin

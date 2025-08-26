@@ -48,13 +48,18 @@ class GoalController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'goal' => ['required'],
+            'goal' => 'required|string|max:255',
         ]);
 
         $validated['user_id'] = auth()->id();
-        Goal::create($validated);
+        $goal = Goal::create($validated);
         
-        return redirect()->route('goal.index');
+        return response()->json([
+            'id' => $goal->id,
+            'goal' => $goal->goal,
+            'completion_rate' => $goal->completeRate(),
+            'tasks' => [],
+        ], 201);
     }
 
     /**
@@ -78,6 +83,8 @@ class GoalController extends Controller
      */
     public function update(Request $request, Goal $goal)
     {
+        $this->authorize('update', $goal);
+
         $validated = $request->validate(['goal' => 'required|string|max:255']);
         $goal->update($validated);
     }
@@ -87,6 +94,8 @@ class GoalController extends Controller
      */
     public function destroy(Goal $goal)
     {
+        $this->authorize('delete', $goal);
+
         try {
             
             $goal->delete();

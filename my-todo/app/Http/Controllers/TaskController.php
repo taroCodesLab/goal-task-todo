@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Goal;
 use App\Models\Task;
 use Illuminate\Http\Request;
 
@@ -49,8 +50,15 @@ class TaskController extends Controller
         }
     }
 
-    public function updateStatus(Request $request, Task $task)
+    public function updateStatus(Request $request, Goal $goal, Task $task)
     {
+        $this->authorize('update', $task);
+
+        // taskがgoalに属しているかチェック
+        if ($task->goal_id !== $goal->id) {
+            abort(403, 'このタスクは指定された目標に属していません');
+        }
+
         $request->validate([
             'status' => 'required|in:未着手,進行中,完了',
         ]);
@@ -86,6 +94,8 @@ class TaskController extends Controller
      */
     public function update(Request $request, Task $task)
     {
+        $this->authorize('update', $task);
+
         $validated  = $request->validate([
             'task' => 'required|string|max:255',
         ]);
@@ -95,9 +105,18 @@ class TaskController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Task $task)
+    public function destroy(Goal $goal, Task $task)
     {
+        $this->authorize('delete', $task);
+
         try {
+            // Goalに属するTaskであるか確認（念のため）
+            if ($task->goal_id !== $goal->id) {
+                return response()->json([
+                    'error' => 'このTaskは指定されたGoalに属していません。',
+                ], 403);
+            }
+
             $task->delete();
 
             return response()->json([

@@ -14,7 +14,8 @@
 import { computed, inject } from 'vue';
 
 const props = defineProps({
-    task: Object
+    task: Object,
+    goalId: Number,
 });
 
 const emit = defineEmits(['delete-task']);
@@ -46,7 +47,7 @@ const handleToggleTaskStatus = async () => {
     props.task.status = nextStatus;
 
     try {
-        await toggleTaskStatus(nextStatus, props.task.id);
+        await toggleTaskStatus(nextStatus, props.task.id, props.goalId);
     } catch (error) {
         console.error('エラー：', error);
         alert('ステータスの更新に失敗しました');
@@ -59,7 +60,7 @@ const handleDeleteTask = async () => {
         id: props.task.id,
         task: props.task.task,
         status: props.task.status,
-        goal_id: props.task.goal_id
+        goal_id: props.goalId
     };
 
     try {
