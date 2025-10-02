@@ -1,7 +1,7 @@
 
 @extends('layouts.app')
 
-@section('title', 'Goalリスト')
+@section('title', 'Go for Goals')
 
 @section('content')
 @if(session('error'))

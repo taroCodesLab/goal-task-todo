@@ -131,7 +131,9 @@ export const useGoalStore = defineStore('goal', {
             this.goals.forEach((goal, index) => {
                 goal.order = index + 1;
             });
-            await apiUpdateOrder(this.goals);
+            if (this.mode === 'user') {
+                await apiUpdateOrder(this.goals);
+            }
         },
         async updateTaskStatus(nextStatus, taskId, goalId) {
             if (this.mode === 'user') {

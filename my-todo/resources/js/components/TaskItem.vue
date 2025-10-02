@@ -4,7 +4,7 @@
             <div @click="handleToggleTaskStatus" class="w-4 h-4 rounded-full border flex items-center justify-center cursor-pointer" :class="statusClass"></div>
             <span class="ml-4 flex-grow">{{ task.task }}</span>
             <span @click="handleToggleTaskStatus" class="cursor-pointer" :class="statusClass">{{ task.status }}</span>
-            <button @click="handleDeleteTask" class="text-red-500 hover:text-red-700 px-2">✖️</button>
+            <button @click="handleDeleteTask" class="bg-red-500 hover:bg-red-700 text-white rounded-full w-5 flex items-center justify-center shadow-md"><span class="text-xl leading-none font-bold">-</span></button>
         </div>
     </li>
 </template>

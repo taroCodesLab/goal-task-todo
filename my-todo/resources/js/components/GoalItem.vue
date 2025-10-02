@@ -1,14 +1,14 @@
 <template>
-    <li class="w-full border-t border-gray-300 py-3 mx-auto">
+    <li class="w-full border-t border-gray-300 py-4 mx-auto">
         <div class="flex items-center space-x-2">
-            <input type="checkbox" name="goal_check[]" :id="`goal_check_${goal.id}`" class="h-5 w-5 text-green-500">
+            <div class="h-4 w-4 rounded-full border border-gray-400 bg-white flex-shrink-0"></div>
             <svg @click="toggleDetails" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 cursor-pointer translate-y-0.5" :class="{'text-gray-500': !goal.showDetails, 'text-blue-500': goal.showDetails}" viewBox="0 0 20 20" fill="currentColor">
                   <path :d="goal.showDetails ? closeIcon : openIcon" />
             </svg>
             <span @click="toggleDetails" @dblclick="editGoal" v-if="!isEditing" class="cursor-pointer w-full">{{ goal.goal }}</span>
             <input v-else v-model="editedGoal.goal" @blur="finishEdit" @keydown.enter.exact="onEnter" @compositionstart="isComposing = true" @compositionend="onCompositionEnd" ref="editInput" class="border rounded w-full px-2 py-1">
             <span v-if="Array.isArray(goal.tasks) && goal.tasks.length > 0" class="text-sm">{{ completionRate }}%</span>
-            <button @click="deleteGoal" class="text-red-500 hover:text-red-700 px-2">✖️</button>
+            <button @click="deleteGoal" class="bg-red-500 hover:bg-red-700 text-white rounded-full w-6 h-6 flex items-center justify-center shadow-md shrink-0"><span class="leading-none text-base font-bold">-</span></button>
         </div>
 
         <!-- タスクリスト　-->

@@ -9,6 +9,8 @@ services:
       - ./my-todo:/var/www/
     depends_on:
       - mysql
+    environment:
+      - CHOKIDAR_USEPOLLING=true
 
   nginx:
     container_name: mytodo-nginx

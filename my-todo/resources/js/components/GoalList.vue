@@ -16,7 +16,7 @@
     </form>
     <div class="w-full flex justify-center items-center">
       <div class="w-full max-w-xl">
-          <draggable v-model="goals" @end="updateOrder" item-key="id" tag="ul" class="mt-6 space-y-3 flex flex-col jutify-center">
+          <draggable v-model="goals" @end="updateOrder" item-key="id" tag="ul" class="mt-6 mx-2 space-y-3 flex flex-col jutify-center">
             <template #item="{ element: goal }">
               <goalItem :goal="goal" @delete-goal="deleteGoal" @update-goal="updateGoal" @toggle-details="onToggleDetails"/>
             </template>

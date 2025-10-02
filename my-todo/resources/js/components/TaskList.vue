@@ -2,9 +2,9 @@
     <div class="ml-8 mt-2 border-l-2 border-blue-400 pl-4">
         <p class="text-gray-600">タスク一覧</p>
         <form @submit.prevent="handleAddTask">
-            <input v-model="taskField.fieldValue.value" type="text" name="task" id="task" class="border rounded w-64 py-1 px-2" placeholder="新しいタスクを追加" :disabled="isLimitReached" />
-            <p v-if="taskField.error.value" class="absolute top-0p left-0p text-red-500 text-xs italic mt-1"> {{ taskField.error.value }}</p>
-            <button type="submit" class="ml-2 px-4 py-1 bg-blue-500 text-white rounded" :disabled="isLimitReached" >追加</button>
+                <input v-model="taskField.fieldValue.value" type="text" name="task" id="task" class="border rounded w-2/3 sm:w-64 py-1 px-2 " placeholder="新しいタスクを追加" :disabled="isLimitReached" />
+                <p v-if="taskField.error.value" class="absolute top-0p left-0p text-red-500 text-xs italic mt-1"> {{ taskField.error.value }}</p>
+            <button type="submit" class="ml-2 px-4 py-1 bg-blue-500 text-white rounded" :disabled="isLimitReached" >+</button>
         </form>
         <ul class="mt-4">
             <TaskItem v-for="task in tasks" :key="task.id" :task="task" :goal-id="goal.id"/>

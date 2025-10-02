@@ -21,7 +21,7 @@
         <header style="background-color: #b0e0e6;" class="p-4 sm:w-full">
             <div class="container mx-auto flex items-center justify-between">
                 <a href="{{ route('goal.index') }}">
-                    <h1 class="font-bold text-lg text-white">You are GOAL</h1>
+                    <h1 class="font-bold text-lg text-white">Go for Goals</h1>
                 </a>
                 <div class="flex items-center space-x-4">
                     @auth

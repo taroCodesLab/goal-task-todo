@@ -12,9 +12,17 @@ export default defineConfig({
         vue(),
     ],
     server: {
-        host: true,
+        host: '0.0.0.0',
+        watch: {
+            usePolling: true,
+            ignored: [
+                '**/node_modules/**',
+                '**/public/**',
+                '**/resources/**',
+                '**/vendor/**',
+            ],
+        },
         hmr: {
-            protocol: 'ws',
             host: 'localhost',
         },
     },
