@@ -4,6 +4,7 @@ import { createPinia } from 'pinia';
 import GoalList from './components/GoalList.vue';
 import Alpine from 'alpinejs';
 import { initCsrf } from './api/csrf';
+import i18n from './plugins/i18n';
 
 initCsrf();
 
@@ -14,6 +15,7 @@ if (el) {
 
     const pinia = createPinia();
     app.use(pinia);
+    app.use(i18n);
 
     app.component('goal-list', GoalList);
     app.mount('#app');

@@ -35,17 +35,18 @@
                             </svg>
                         </button>
                         <div x-show="open" x-cloak @click.outside=" open = false" class="absolute right-0 mt-2 w-48 bg-white border border-gray-300 rounded shadow-lg z-50">
-                            <a href="{{ route('goal.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">ホームに戻る</a>
-                            <a href="{{ route('profile.edit') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">プロフィール編集</a>
+                            <a href="{{ route('goal.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">{{ __('messages.back_to_home') }}</a>
+                            <a href="{{ route('profile.edit') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">{{ __('messages.profile_edit') }}</a>
+                            <a href="{{ route('contact.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">{{ __('messages.contact') }}</a>
                             <form action="{{ route('logout') }}" method="POST" class="block ">
                                 @csrf
-                                <button type="submit" class="w-full text-left px-4 py-2 text-sm text-red-500 font-bold hover:bg-gray-100">ログアウト</button>
+                                <button type="submit" class="w-full text-left px-4 py-2 text-sm text-red-500 font-bold hover:bg-gray-100">{{ __('messages.logout') }}</button>
                             </form>
                         </div>
                     </div>
                     @else
-                    <a href="/login" class="text-white font-bold px-3 py-1 rounded transition duration-200 hover:bg-white hover:text-[#4682b4]">ログイン</a>
-                    <a href="/register" class="text-white font-bold px-3 py-1 rounded transition duration-200 hover:bg-white hover:text-[#4682b4]">新規登録</a>
+                    <a href="/login" class="text-white font-bold px-3 py-1 rounded transition duration-200 hover:bg-white hover:text-[#4682b4]">{{ __('messages.login') }}</a>
+                    <a href="/register" class="text-white font-bold px-3 py-1 rounded transition duration-200 hover:bg-white hover:text-[#4682b4]">{{ __('messages.register') }}</a>
                     @endauth
                 </div>
             </div>

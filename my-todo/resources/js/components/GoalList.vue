@@ -23,12 +23,15 @@
           </draggable>
       </div>
     </div>
+    <ConfirmModal v-if="isVisible" :isVisible="isVisible" :message="message" @confirm="confirm" @cancel="cancel" />
   </div>
 </template>
 
 <script setup>
 import { ref, provide, watch, nextTick } from "vue";
 import draggable from "vuedraggable";
+import { useConfirm } from "../composables/useConfirm";
+import ConfirmModal from "./ConfirmModal.vue";
 import goalItem from "./GoalItem.vue";
 import { useGoalStore } from '../stores/goalStore';
 import { useFieldValidation, rules } from "../composables/useFieldValidation";
@@ -46,6 +49,7 @@ const props = defineProps({
 const newGoal = ref('');
 const goalStore = useGoalStore();
 const { goals, isGoalLimitedReached } = storeToRefs(goalStore);
+const { isVisible, message, openConfirm, confirm, cancel} = useConfirm();
 
 onMounted(() => {
   if (!props.isAuthenticated) {
@@ -120,7 +124,8 @@ const addGoal = async () => {
 };
 
 const deleteGoal = async (id) => {
-  if (!confirm('本当に削除しますか？')) return;
+  const confirmed = await openConfirm('本当に削除しますか？');
+  if (!confirmed) return;
   try {
     await goalStore.deleteGoal(id);
   } catch (error) {

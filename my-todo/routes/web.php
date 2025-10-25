@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ContactController;
 use App\Http\Controllers\GoalController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\ProfileController;
@@ -32,6 +33,9 @@ Route::middleware(['auth'])->group(function () {
 
     // Route::post('/goal/update-order', [GoalController::class, 'updateOrder'])->name('goal.updateOrder');
     // Route::put('/goal/{goal}', [GoalController::class, 'update'])->name('goal.update');
+
+    Route::get('/contact', [ContactController::class, 'index'])->name('contact.index');
+    Route::post('/contact', [ContactController::class, 'send'])->name('contact.send');
 
     // ユーザー情報編集用のルート
     Route::get('/users/edit', [UserController::class, 'edit'])->name('users.edit');

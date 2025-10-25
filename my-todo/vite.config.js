@@ -13,8 +13,8 @@ export default defineConfig({
     ],
     server: {
         host: '0.0.0.0',
+        port: 5173,
         watch: {
-            usePolling: true,
             ignored: [
                 '**/node_modules/**',
                 '**/public/**',
@@ -24,6 +24,8 @@ export default defineConfig({
         },
         hmr: {
             host: 'localhost',
+            protocol: 'ws',
+            port: 5173,
         },
     },
     css: {
