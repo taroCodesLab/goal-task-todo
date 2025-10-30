@@ -96,16 +96,10 @@ class GoalController extends Controller
     {
         $this->authorize('delete', $goal);
 
-        try {
-            
-            $goal->delete();
+        $goal->delete();
 
-            return response()->noContent();
-        } catch (\Exception $e) {
-            return response()->json([
-                'error' => $e->getMessage(),
-            ], 500);
-        }
+        return response()->noContent();
+        
     }
 
     public function updateOrder(Request $request)

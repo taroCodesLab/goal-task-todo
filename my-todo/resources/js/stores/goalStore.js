@@ -1,4 +1,4 @@
-// stores/goalStore.js
+
 import { defineStore } from 'pinia';
 // import { deleteJson, postJson, putJson } from "../utils/http";
 import { createGoal as apiCreateGoal, deleteGoal as apiDeleteGoal, updateOrder as apiUpdateOrder, updateGoal as apiUpdateGoal } from "../api/goal";
