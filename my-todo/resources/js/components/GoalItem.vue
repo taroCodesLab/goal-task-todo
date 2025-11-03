@@ -73,7 +73,7 @@ const finishEdit = () => {
 
 const completionRate = computed(() => {
     const totalTasks = props.goal.tasks.length;
-    const completedTasks = props.goal.tasks.filter(task => task.status === '完了').length;
+    const completedTasks = props.goal.tasks.filter(task => task.status === 'done').length;
 
     return totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
 });

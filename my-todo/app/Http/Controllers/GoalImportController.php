@@ -46,7 +46,7 @@ class GoalImportController extends Controller
                         $goal->tasks()->firstOrCreate([
                             'task' => $taskData['task'],
                         ], [
-                            'status' => $taskData['status'] ?? '未着手',
+                            'status' => $taskData['status'] ?? 'todo',
                             'created_at' => $taskData['createdAt'] ?? now(),
                             'updated_at' => now(),
                         ]);
@@ -88,7 +88,7 @@ class GoalImportController extends Controller
         //     foreach ($goalData['tasks'] ?? [] as $taskData) {
         //         $goal->tasks()->create([
         //             'task' => $taskData['task'],
-        //             'status' => $taskData['status'] ?? '未着手',
+        //             'status' => $taskData['status'] ?? 'todo',
         //             'created_at' => $taskData['createdAt'] ?? now(),
         //             'updated_at' => now(),
         //         ]);

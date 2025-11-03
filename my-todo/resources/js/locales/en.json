@@ -8,5 +8,10 @@
         "required": "This field is required",
         "maxLength": "Maximum length is {length} characters",
         "guestLimit": "Guest users cannot add more items"
+    },
+    "status": {
+        "todo": "To do",
+        "doing": "Doing",
+        "done": "Done"
     }
 }

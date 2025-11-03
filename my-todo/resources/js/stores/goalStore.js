@@ -95,7 +95,7 @@ export const useGoalStore = defineStore('goal', {
                         task: task,
                         createdAt: new Date().toISOString(),
                         goal_id: goalId,
-                        status: '未着手'
+                        status: 'todo'
                     };
                     goal.tasks.push(newTask);
                     this.saveToLocalStorage();

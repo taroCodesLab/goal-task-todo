@@ -75,7 +75,7 @@ class TaskController extends Controller
             }
     
             $request->validate([
-                'status' => 'required|in:未着手,進行中,完了',
+                'status' => 'required|in:todo,doing,done',
             ]);
     
             //リクエストのステータスをタスクに保存

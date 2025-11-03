@@ -8,5 +8,10 @@
         "required": "必須項目です",
         "maxLength": "{length}文字以内で入力してください",
         "guestLimit": "ゲストではこれ以上追加できません"
+    },
+    "status": {
+        "todo": "未着手",
+        "doing": "進行中",
+        "done": "完了"
     }
 }

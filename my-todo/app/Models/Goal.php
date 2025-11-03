@@ -34,7 +34,7 @@ class Goal extends Model
     public function completeRate(): int
     {
         $totalTasks = $this->tasks->count();
-        $completedTasks = $this->tasks->where('status', '完了')->count();
+        $completedTasks = $this->tasks->where('status', 'done')->count();
 
         //完了したタスクが100%中何%か送る
         return $totalTasks > 0 ? round(($completedTasks / $totalTasks) * 100) : 0;

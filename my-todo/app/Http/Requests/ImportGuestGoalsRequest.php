@@ -27,7 +27,7 @@ class ImportGuestGoalsRequest extends FormRequest
             'goals.*.createdAt' => ['nullable', 'date'],
             'goals.*.tasks' => ['sometimes', 'array'],
             'goals.*.tasks.*.task' => ['required', 'string', 'max:255'],
-            'goals.*.tasks.*.status' => ['nullable', 'in:未着手,進行中,完了'],
+            'goals.*.tasks.*.status' => ['nullable', 'in:todo,doing,done'],
             'goals.*.tasks.*.createdAt' => ['nullable', 'date'],
         ];
     }
