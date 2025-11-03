@@ -55,7 +55,7 @@
             @yield('content')
         </div>
         <footer style="background-color: #b0e0e6;" class="h-6 flex items-center justify-center p-2 font-bold text-white">
-            <p>© 2025 You are Goal</p>
+            <p>© 2025 Go for Goals</p>
         </footer>
     </body>
 </html>
