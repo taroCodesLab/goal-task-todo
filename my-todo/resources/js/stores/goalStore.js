@@ -54,7 +54,6 @@ export const useGoalStore = defineStore('goal', {
             
         },
         async updateGoal(updatedGoal) {
-            console.log(updatedGoal);
             if (this.mode === 'user') {
                 await apiUpdateGoal({ goal_id: updatedGoal.id, goal_goal: updatedGoal.goal });
                 const index = this.goals.findIndex(goal => goal.id === updatedGoal.id);
