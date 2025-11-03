@@ -31,11 +31,15 @@ This is a Todo application that combines goal management and task management.\
 
 ## セットアップ手順
 ### 1. リポジトリのクローン
-`git clone https://github.com/sourse-taro/goal-task-todo.git
-cd goal-task-todo`
+```
+git clone https://github.com/sourse-taro/goal-task-todo.git
+cd goal-task-todo
+```
 
 ### 2. 環境構築
-`docker compose up -d --build`
+```
+docker compose up -d --build
+```
 
 ### 3. コンテナに入って依存関係をインストール
 ```
