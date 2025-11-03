@@ -28,7 +28,7 @@
 </template>
 
 <script setup>
-import { ref, provide, watch, nextTick } from "vue";
+import { provide } from "vue";
 import draggable from "vuedraggable";
 import { useI18n } from "vue-i18n";
 import { useConfirm } from "../composables/useConfirm";
@@ -48,10 +48,9 @@ const props = defineProps({
   isAuthenticated: Boolean
 });
 
-const newGoal = ref('');
 const { t } = useI18n();
 const goalStore = useGoalStore();
-const { goals, isGoalLimitedReached } = storeToRefs(goalStore);
+const { goals } = storeToRefs(goalStore);
 const { isVisible, message, openConfirm, confirm, cancel} = useConfirm();
 const { notifyError } = useNotify();
 
@@ -94,19 +93,6 @@ const goalField = useFieldValidation('', [
   rules.required(t('validation.required')),
   rules.maxLength(255, t('validation.maxLength', { length: 255 }))
 ]);
-
-// watch(
-//   isGoalLimitedReached,
-//   (isLimited) => {
-//     if (isLimited) {
-//       goalField.setError('ゲストではこれ以上追加できません。');
-//     } else {
-//       console.log('reset');
-//       goalField.clearError();
-//     }
-//   },
-//   { immediate: true }
-// );
 
 const { isLimitReached, setLimitError } = useItemLimit({
   store: goalStore,

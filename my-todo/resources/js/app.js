@@ -1,5 +1,5 @@
 import './bootstrap';
-import { createApp, toDisplayString } from 'vue';
+import { createApp } from 'vue';
 import { createPinia } from 'pinia';
 import GoalList from './components/GoalList.vue';
 import Alpine from 'alpinejs';
@@ -33,14 +33,6 @@ if (el) {
     app.component('goal-list', GoalList);
     app.mount('#app');
 }
-
-// const app = createApp({});
-
-// const pinia = createPinia();
-// app.use(pinia);
-
-// app.component('goal-list', GoalList);
-// app.mount('#app');
 
 window.Alpine = Alpine;
 

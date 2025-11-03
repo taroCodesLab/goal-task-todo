@@ -14,9 +14,8 @@
 
 <script setup>
 
-import { ref, inject } from 'vue';
+import { inject } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { storeToRefs } from 'pinia';
 import TaskItem from './TaskItem.vue';
 import { useGoalStore } from '../stores/goalStore';
 import { useItemLimit } from '../composables/useItemLimit';

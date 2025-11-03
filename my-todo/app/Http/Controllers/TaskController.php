@@ -119,15 +119,16 @@ class TaskController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Task $task)
-    {
-        $this->authorize('update', $task);
+    // I didn't think it was necessary, so I didn't implement it.
+    // public function update(Request $request, Task $task)
+    // {
+    //     $this->authorize('update', $task);
 
-        $validated  = $request->validate([
-            'task' => 'required|string|max:255',
-        ]);
-        $task->update($validated);
-    }
+    //     $validated  = $request->validate([
+    //         'task' => 'required|string|max:255',
+    //     ]);
+    //     $task->update($validated);
+    // }
 
     /**
      * Remove the specified resource from storage.

@@ -1,6 +1,5 @@
 
 import { defineStore } from 'pinia';
-// import { deleteJson, postJson, putJson } from "../utils/http";
 import { createGoal as apiCreateGoal, deleteGoal as apiDeleteGoal, updateOrder as apiUpdateOrder, updateGoal as apiUpdateGoal } from "../api/goal";
 import { createTask as apiCreateTask, deleteTask as apiDeleteTask, toggleTaskStatus as apiToggleTaskStatus } from "../api/task";
 import { importGoalsFromGuest } from '../api/import';
@@ -117,16 +116,17 @@ export const useGoalStore = defineStore('goal', {
                 }
             }
         },
-        async updateTask(goalId, updatedTask) {
+        // I didn't think it was necessary, so I didn't implement it.
+        // async updateTask(goalId, updatedTask) {
             
-            const goal = this.goals.find(goal => goal.id === goalId);
-            if (goal) {
-                const index = goal.tasks.findIndex(task => task.id === updatedTask.id);
-                if (index !== -1) {
-                    goal.tasks[index] = updatedTask;
-                }
-            }
-        },    
+        //     const goal = this.goals.find(goal => goal.id === goalId);
+        //     if (goal) {
+        //         const index = goal.tasks.findIndex(task => task.id === updatedTask.id);
+        //         if (index !== -1) {
+        //             goal.tasks[index] = updatedTask;
+        //         }
+        //     }
+        // },    
         async updateOrder() {
             this.goals.forEach((goal, index) => {
                 goal.order = index + 1;
@@ -155,17 +155,6 @@ export const useGoalStore = defineStore('goal', {
                 }
             }
         },
-        // addLocalGoal(goal) {
-        //     const newGoal = {
-        //         id: Date.now(),
-        //         goal: goal,
-        //         createdAt: new Date().toISOString(),
-        //     };
-        //     this.goals.push(newGoal);
-        //     console.log(goal);
-        //     console.log(newGoal);
-        //     this.saveToLocalStorage();
-        // },
         saveToLocalStorage() {
             localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(this.goals));
         },

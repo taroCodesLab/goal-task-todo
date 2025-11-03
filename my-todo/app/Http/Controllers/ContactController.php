@@ -12,6 +12,7 @@ class ContactController extends Controller
         return view('contact.index');
     }
 
+    // Send only for debugging
     public function send(Request $request)
     {
         $validated = $request->validate([

@@ -23,22 +23,7 @@ Route::get('/', function () {
 });
 
 Route::get('/goal', [GoalController::class, 'index'])->name('goal.index');
-Route::middleware(['auth'])->group(function () {
-    // Route::post('/goal', [GoalController::class, 'store'])->name('goal.store');
-    // Route::delete('/goal/{goal}', [GoalController::class, 'destroy'])->name('goal.delete');
 
-    // Route::post('/task', [TaskController::class, 'store'])->name('task.store');
-    // Route::put('/task/{task}/status', [TaskController::class, 'updateStatus']);
-    // Route::delete('/task/{task}', [TaskController::class, 'destroy'])->name('task.delete');
-
-    // Route::post('/goal/update-order', [GoalController::class, 'updateOrder'])->name('goal.updateOrder');
-    // Route::put('/goal/{goal}', [GoalController::class, 'update'])->name('goal.update');
-
-});
-
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
