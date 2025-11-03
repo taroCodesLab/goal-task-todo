@@ -1,5 +1,5 @@
 # Goal Task Todo
-This is a Todo application that combines goal management and task management.
+This is a Todo application that combines goal management and task management.\
 目標管理とタスク管理を組み合わせたTodoアプリケーションです。
 
 ## 特徴
@@ -38,22 +38,28 @@ cd goal-task-todo`
 `docker compose up -d --build`
 
 ### 3. コンテナに入って依存関係をインストール
-`docker exec -it mytodo-php bash
+```
+docker exec -it mytodo-php bash
 composer install
-npm install`
+npm install
+```
 
 ### 4. 環境設定1
-`cp .env.example .env
-cp /my-todo/.env.example .env`
+```
+cp .env.example .env  
+cp /my-todo/.env.example .env
+```
 
 ### 5. データベースの設定
-MYSQL_PASSWORD=your_password
+MYSQL_PASSWORD=your_password  
 DB_PASSWORD=your_password
 
 ### 6. 環境設定2
-`php artisan key:generate
-php artisan migrate --seed
-npm run dev`
+```
+php artisan key:generate  
+php artisan migrate --seed  
+npm run dev
+```
 
 ### 7. アクセス
 http://localhost:81 （例）
