@@ -146,7 +146,7 @@ export const useGoalStore = defineStore('goal', {
                     }
                 }
             } else {
-                const goal = this.goals.find(goal => goal.id === taskId);
+                const goal = this.goals.find(goal => goal.id === goalId);
                 if (goal) {
                     const task = goal.tasks.find(task => task.id === taskId);
                     if (task) {
@@ -171,37 +171,61 @@ export const useGoalStore = defineStore('goal', {
         },
         loadFromLocalStorage() {
             const data = localStorage.getItem(LOCAL_STORAGE_KEY);
-            if (data) {
-                try {
-                    const parsed = JSON.parse(data);
-                    this.goals = Array.isArray(parsed) ? parsed.filter(goal => typeof goal === 'object' && goal.goal) : [];
-                } catch (error) {
-                    console.error('ローカルストレージからのデータのパーズに失敗しました', error);
-                    this.goals = [];
-                }
-            } else {
+
+            if (!data) {
                 this.goals = [];
+                return false;
             }
+
+            try {
+                const parsed = JSON.parse(data);
+                this.goals = Array.isArray(parsed) ? parsed.filter(goal => typeof goal === 'object' && goal.goal) : [];
+                return true;
+            } catch (error) {
+                console.error('Failed to parse data from local storage', error);
+                this.goals = [];
+                throw error;
+            }
+            
         },
         clearLocalGoals() {
             this.goals = [];
             localStorage.removeItem(LOCAL_STORAGE_KEY);
         },
         async transferLocalGoalsToServer() {
+            if (this.mode !== 'guest') return false;
+
+            const raw = localStorage.getItem(LOCAL_STORAGE_KEY);
+            if (!raw) return false;
+
+
+            let localGoals;
             try {
-                if (this.mode !== 'guest') return;
+                localGoals = JSON.parse(raw);
+            } catch (err) {
+                console.error('localGoals JSON parse failed', err);
+                localStorage.removeItem(LOCAL_STORAGE_KEY);
+                return false;
+            }
 
-                const localGoals = JSON.parse(localStorage.getItem('guest_goals') || 'null');
-                
-                if (Array.isArray(localGoals) && localGoals.length > 0) {
-                    const importedGoals = await importGoalsFromGuest(localGoals);
-                    this.goals = [...importedGoals];
-                    await this.updateOrder();
-                    localStorage.removeItem('guest_goals');
-                }
-
+            if (!Array.isArray(localGoals) || localGoals.length === 0) {
+                return false;
+            }
+            
+            try {
+                const importedGoals = await importGoalsFromGuest(localGoals);
+                this.goals = Array.isArray(importedGoals) ? [...importedGoals] : [];
+                await this.updateOrder();
+                localStorage.removeItem(LOCAL_STORAGE_KEY);
+                return true;
             } catch (error) {
-                console.error('ゲストgoalのインポートに失敗:', error);
+                if (!(error && error.code)) {
+                    const e = new Error(error?.message || 'Failed to sync guest data.');
+                    e.code = error?.code || 'import_failed';
+                    e.data = error?.data || null;
+                    throw e;
+                }
+                throw error;
             }
         }
     }

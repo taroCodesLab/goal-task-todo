@@ -49,8 +49,8 @@ const handleToggleTaskStatus = async () => {
     try {
         await toggleTaskStatus(nextStatus, props.task.id, props.goalId);
     } catch (error) {
-        console.error('エラー：', error);
-        alert('ステータスの更新に失敗しました');
+        console.error('Operation failed:', e);
+        notifyError(e);
     }
 };
 
@@ -66,7 +66,8 @@ const handleDeleteTask = async () => {
     try {
         await deleteTask(taskData);
     } catch (error) {
-        console.error('削除エラー：', error);
+        console.error('Operation failed:', e);
+        notifyError(e);
     }
 };
 </script>

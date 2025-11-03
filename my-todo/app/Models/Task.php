@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Task extends Model
 {
@@ -15,7 +16,7 @@ class Task extends Model
         'status',
     ];
 
-    public function goal()
+    public function goal(): BelongsTo
     {
         return $this->belongsTo(Goal::class);
     }

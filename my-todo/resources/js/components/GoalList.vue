@@ -30,12 +30,14 @@
 <script setup>
 import { ref, provide, watch, nextTick } from "vue";
 import draggable from "vuedraggable";
+import { useI18n } from "vue-i18n";
 import { useConfirm } from "../composables/useConfirm";
 import ConfirmModal from "./ConfirmModal.vue";
 import goalItem from "./GoalItem.vue";
 import { useGoalStore } from '../stores/goalStore';
 import { useFieldValidation, rules } from "../composables/useFieldValidation";
 import { useItemLimit } from "../composables/useItemLimit";
+import { useNotify } from "../composables/useNotify";
 import { storeToRefs } from 'pinia';
 import { onMounted } from "vue";
 
@@ -47,34 +49,50 @@ const props = defineProps({
 });
 
 const newGoal = ref('');
+const { t } = useI18n();
 const goalStore = useGoalStore();
 const { goals, isGoalLimitedReached } = storeToRefs(goalStore);
 const { isVisible, message, openConfirm, confirm, cancel} = useConfirm();
+const { notifyError } = useNotify();
 
-onMounted(() => {
-  if (!props.isAuthenticated) {
-    goalStore.setMode('guest');
-    goalStore.loadFromLocalStorage();
-  } else {
-    goalStore.transferLocalGoalsToServer();
+onMounted(async () => {
+  try {
+    if (!props.isAuthenticated) {
+      goalStore.setMode('guest');
+      try {
+        goalStore.loadFromLocalStorage();
+      } catch (e) {
+        console.error('loadFromLocalStorage failed:', e);
+        setTimeout(() => notifyError(e), 100);
+      }
+    } else {
+      goalStore.setMode('guest');
+      try {
+        await goalStore.transferLocalGoalsToServer();
+      } catch (e) {
+        console.error('transferLocalGoalsToServer failed:', e);
+        notifyError(e);
+      } finally {
+        goalStore.setMode('user');
+        
+        if (!Array.isArray(goalStore.goals) || goalStore.goals.length === 0) {
+          goalStore.goals = Array.isArray(props.initialGoals) ? [...props.initialGoals] : [];
+        }
+      }
 
-    goalStore.setMode('user');
-    goalStore.goals = [...props.initialGoals];
+    }
+  } catch (e) {
+    console.error('GoalList initialization error:', e);
 
+    notifyError(e);
   }
 });
 
-const limitReachedRule = (_) => {
-  if (goalStore.isGoalLimitedReached) {
-    return 'ゲストではこれ以上追加できません。';
-  }
-  return null;
-}
 
 //Validations
 const goalField = useFieldValidation('', [
-  rules.required,
-  rules.maxLength(255),
+  rules.required(t('validation.required')),
+  rules.maxLength(255, t('validation.maxLength', { length: 255 }))
 ]);
 
 // watch(
@@ -97,13 +115,13 @@ const { isLimitReached, setLimitError } = useItemLimit({
   modeSelector: s => s.mode
 });
 
-setLimitError(goalField, 'ゲストではこれ以上追加できません。');
+setLimitError(goalField, t('validation.guestLimit'));
 
 // methods
 const addGoal = async () => {
 
   if (isLimitReached.value) {
-    goalField.setError('ゲストではこれ以上追加できません。');
+    goalField.setError(t('validation.guestLimit'));
     return;
   }
 
@@ -119,33 +137,37 @@ const addGoal = async () => {
       goalField.clearError();
     }
   } catch (e) {
-    console.error('goal追加エラー:', e);
+    console.error('Operation failed:', e);
+    notifyError(e || 'Failed to add goal');
   }
 };
 
 const deleteGoal = async (id) => {
-  const confirmed = await openConfirm('本当に削除しますか？');
+  const confirmed = await openConfirm(t('confirm.message'));
   if (!confirmed) return;
   try {
     await goalStore.deleteGoal(id);
-  } catch (error) {
-    console.error('エラー：', error);
+  } catch (e) {
+    console.error('Operation failed:', e);
+    notifyError(e);
   }
 };
 
 const updateOrder = async () => {
   try {
     await goalStore.updateOrder();
-  } catch (error) {
-    console.error('順番の保存に失敗しました', error);
+  } catch (e) {
+    console.error('Operation failed:', e);
+    notifyError(e);
   }
 };
 
 const updateGoal = async (updatedGoal) => {
   try {
     await goalStore.updateGoal(updatedGoal);
-  } catch (error) {
-    console.error('更新に失敗しました', error);
+  } catch (e) {
+    console.error('Operation failed:', e);
+    notifyError(e);
   }
 };
 
@@ -153,8 +175,9 @@ const updateGoal = async (updatedGoal) => {
 const addTask = async (taskData) => {
   try {
     await goalStore.addTask(taskData.id, taskData.task);
-  } catch (error) {
-    console.error('通信エラー：', error);
+  } catch (e) {
+    console.error('Operation failed:', e);
+    notifyError(e);
   }
 };
 provide('addTask', addTask);
@@ -162,8 +185,9 @@ provide('addTask', addTask);
 const deleteTask = async (taskData) => {
   try {
     await goalStore.deleteTask(taskData.goal_id, taskData.id);
-  } catch (error) {
-    console.error('通信エラー：', error);
+  } catch (e) {
+    console.error('Operation failed:', e);
+    notifyError(e);
   }
 };
 provide('deleteTask', deleteTask);
@@ -171,9 +195,9 @@ provide('deleteTask', deleteTask);
 const toggleTaskStatus = async (nextStatus, id, goalId) => {
   try {
     await goalStore.updateTaskStatus(nextStatus, id, goalId);
-  } catch (error) {
-    console.error('通信エラー：', error);
-    alert('ステータスの更新に失敗しました');
+  } catch (e) {
+    console.error('Operation failed:', e);
+    notifyError(e);
   }
 };
 provide('toggleTaskStatus', toggleTaskStatus);

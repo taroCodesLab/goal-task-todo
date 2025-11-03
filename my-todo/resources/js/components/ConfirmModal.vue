@@ -55,7 +55,7 @@ const cancel = () => emits('cancel');
   pointer-events: all;
 }
 
-/* モーダル内クリックをしっかり拾う */
+
 button {
   cursor: pointer;
 }

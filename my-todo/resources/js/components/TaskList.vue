@@ -15,6 +15,7 @@
 <script setup>
 
 import { ref, inject } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { storeToRefs } from 'pinia';
 import TaskItem from './TaskItem.vue';
 import { useGoalStore } from '../stores/goalStore';
@@ -32,8 +33,7 @@ const props = defineProps({
 });
 
 
-// 状態
-const newTask = ref('');
+const { t } = useI18n();
 
 const goalStore = useGoalStore();
 // inject　で親から関数を取得
@@ -41,8 +41,8 @@ const addTask = inject('addTask');
 
 //Validation
 const taskField = useFieldValidation('', [
-    rules.required,
-    rules.maxLength(255)
+    rules.required(t('validation.required')),
+    rules.maxLength(255, t('validation.maxLength', { length: 255 }))
 ]);
 
 const { isLimitReached, setLimitError } = useItemLimit({
@@ -52,7 +52,7 @@ const { isLimitReached, setLimitError } = useItemLimit({
     modeSelector: s => s.mode
 });
 
-setLimitError(taskField, 'ゲストではこれ以上追加できません。');
+setLimitError(taskField, t('validation.guestLimit'));
 
 // タスク追加処理
 const handleAddTask = async () => {
@@ -75,7 +75,8 @@ const handleAddTask = async () => {
                 taskField.clearError();
             }
         } catch (error) {
-            console.error('タスク追加エラー:', error);
+            console.error('Operation failed:', e);
+            notifyError(e || 'Failed to add task');
         }
     } else {
         console.log(taskField.error.value);

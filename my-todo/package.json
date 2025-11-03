@@ -24,6 +24,7 @@
         "tailwindcss": "^3.4.17",
         "vue": "^3.5.13",
         "vue-i18n": "^11.1.12",
+        "vue-toastification": "^2.0.0-rc.5",
         "vuedraggable": "^4.1.0"
     }
 }

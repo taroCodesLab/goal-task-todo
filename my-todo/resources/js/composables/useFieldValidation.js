@@ -8,6 +8,7 @@ export function useFieldValidation(initialValue = '', rules = []) {
     const validate = () => {
         error.value = '';
         for (const rule of rules) {
+            // 関数の実行、取得
             const errorMessage = rule(value.value);
             if (errorMessage) {
                 error.value = errorMessage;
@@ -52,7 +53,23 @@ export function useFieldValidation(initialValue = '', rules = []) {
     };
 }
 
+//ルールをバリデーション関数として定義
 export const rules = {
-    required: (val) => !val ? 'この項目は必須です。' : null,
-    maxLength: (len) => (val) => (val && val.length > len) ? `${len}文字以内で入力してください。` : null,
+    required: (message) => {
+        return (value) => {
+            if (!value || value.trim() === '') {
+                return message;
+            }
+            return null;
+        };
+    },
+    
+    maxLength: (max, message) => {
+        return (value) => {
+            if (value && value.length > max) {
+                return message;
+            }
+            return null;
+        };
+    }
 };

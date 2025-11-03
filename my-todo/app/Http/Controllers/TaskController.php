@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Goal;
 use App\Models\Task;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class TaskController extends Controller
 {
@@ -44,33 +46,58 @@ class TaskController extends Controller
             // データベースから再取得してstatusを含める
             $taskWithStatus = Task::find($task->id);
             return response()->json($taskWithStatus, 201);
-
-        }catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 500);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'message' => '入力に誤りがあります',
+                'code' => 'validation_error',
+                'errors' => $e->errors(),
+            ], 422);
+        } catch (\Exception $e) {
+            Log::error($e);
+            return response()->json([
+                'message' => 'サーバーでエラーが発生しました',
+                'code' => 'server_error',
+            ], 500);
         }
+
     }
 
     public function updateStatus(Request $request, Goal $goal, Task $task)
     {
-        $this->authorize('update', $task);
-
-        // taskがgoalに属しているかチェック
-        if ($task->goal_id !== $goal->id) {
-            abort(403, 'このタスクは指定された目標に属していません');
+        try {
+            $this->authorize('update', $task);
+    
+            // taskがgoalに属しているかチェック
+            if ($task->goal_id !== $goal->id) {
+                return response()->json([
+                    'error' => 'このTaskは指定されたGoalに属していません。',
+                ], 403);
+            }
+    
+            $request->validate([
+                'status' => 'required|in:未着手,進行中,完了',
+            ]);
+    
+            //リクエストのステータスをタスクに保存
+            $task->status = $request->status;
+            $task->save();
+    
+            return response()->json([
+                'status' => $task->status,
+                'message' => 'ステータスが更新されました。',
+            ], 200);
+        } catch (AuthorizationException $e) {
+            return response()->json([
+                'message' => '操作が認可されていません',
+                'code' => 'forbidden',
+            ], 403);
+        } catch (\Exception $e) {
+            Log::error($e);
+            return response()->json([
+                'message' => 'サーバーでエラーが発生しました',
+                'code' => 'server_error',
+            ]);
         }
-
-        $request->validate([
-            'status' => 'required|in:未着手,進行中,完了',
-        ]);
-
-        //リクエストのステータスをタスクに保存
-        $task->status = $request->status;
-        $task->save();
-
-        return response()->json([
-            'status' => $task->status,
-            'message' => 'ステータスが更新されました。',
-        ]);
     }
 
     /**
@@ -107,26 +134,34 @@ class TaskController extends Controller
      */
     public function destroy(Goal $goal, Task $task)
     {
-        $this->authorize('delete', $task);
-
         try {
+            $this->authorize('delete', $task);
+    
             // Goalに属するTaskであるか確認（念のため）
             if ($task->goal_id !== $goal->id) {
                 return response()->json([
                     'error' => 'このTaskは指定されたGoalに属していません。',
                 ], 403);
             }
-
+    
             $task->delete();
-
+    
             return response()->json([
                 'success' => true,
                 'message' => 'Taskの削除に成功しました。',
             ], 200);
-        }catch (\Exception $e){
+        } catch (AuthorizationException $e) {
             return response()->json([
-                'error' => $e->getMessage(),
-            ]);
+                'message' => '操作が認可されていません',
+                'code' => 'forbidden',
+            ], 403);
+        } catch (\Exception $e) {
+            Log::error($e);
+            return response()->json([
+                'message' => 'サーバーでエラーが発生しました',
+                'code' => 'server_error',
+            ], 500);
         }
+
     }
 }

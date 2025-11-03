@@ -3,5 +3,10 @@
         "message": "Are you sure you want to delete this?",
         "cancel": "Cancel",
         "delete": "Delete"
+    },
+    "validation": {
+        "required": "This field is required",
+        "maxLength": "Maximum length is {length} characters",
+        "guestLimit": "Guest users cannot add more items"
     }
 }
