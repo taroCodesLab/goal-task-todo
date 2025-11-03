@@ -9,8 +9,8 @@ This is a Todo application that combines goal management and task management.\
 - 多言語対応（日本語・英語）
 
 ## スクリーンショット
-
-
+<img src="docs/images/main.png" width="50%">
+<img src="docs/images/mobile.png" width="20%">
 ## 技術スタック
 ### フロントエンド
 - Vue.js 3（Composition API）
