@@ -32,7 +32,7 @@ This is a Todo application that combines goal management and task management.\
 ## セットアップ手順
 ### 1. リポジトリのクローン
 ```
-git clone https://github.com/sourse-taro/goal-task-todo.git
+git clone https://github.com/soityn/goal-task-todo.git
 cd goal-task-todo
 ```
 
