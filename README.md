@@ -51,7 +51,7 @@ npm install
 ### 4. 環境設定1
 ```
 cp .env.example .env  
-cp /my-todo/.env.example .env
+cp my-todo/.env.example my-todo/.env
 ```
 
 ### 5. データベースの設定
