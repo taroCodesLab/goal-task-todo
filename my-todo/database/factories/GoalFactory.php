@@ -21,7 +21,7 @@ class GoalFactory extends Factory
     public function definition(): array
     {
         return [
-            'goal' => fake()->realText(),
+            'goal' => fake()->realText(50),
             'user_id' => User::factory(),
             //'progress' => 0,
             'created_at' => now(),
