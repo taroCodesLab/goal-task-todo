@@ -85,4 +85,4 @@ http://localhost:81 （例）
 - ゲストデータのインポート機能
 
 ## ライセンス
-[MIT License](./LICENSE)
+[MIT License](./LICENSE.md)
