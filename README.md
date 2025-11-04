@@ -36,27 +36,27 @@ git clone https://github.com/sourse-taro/goal-task-todo.git
 cd goal-task-todo
 ```
 
-### 2. 環境構築
-```
-docker compose up -d --build
-```
-
-### 3. コンテナに入って依存関係をインストール
-```
-docker exec -it mytodo-php bash
-composer install
-npm install
-```
-
-### 4. 環境設定1
+### 2. 環境設定1
 ```
 cp .env.example .env  
 cp my-todo/.env.example my-todo/.env
 ```
 
-### 5. データベースの設定
+### 3. データベースの設定
 MYSQL_PASSWORD=your_password  
 DB_PASSWORD=your_password
+
+### 4. 環境構築
+```
+docker compose up -d --build
+```
+
+### 5. コンテナに入って依存関係をインストール
+```
+docker exec -it mytodo-php bash
+composer install
+npm install
+```
 
 ### 6. 環境設定2
 ```
